@@ -6,11 +6,13 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration);
 
 const generateImage = async (req, res) => {
+    const { prompt, size } = req.body;
+    const imageSize = size === 'small' ? '256x256' : size === 'medium' ? '512x512' : '1024x1024';
     try {
         const response = await openai.createImage({
-            prompt: 'Dogs playing poker',
+            prompt,
             n: 1,
-            size: '512x512'
+            size: imageSize
         });
         const imageUrl = response.data.data[0].url
         res.status(200).json({
@@ -26,7 +28,7 @@ const generateImage = async (req, res) => {
           }
         res.status(400).json({
             success: false,
-            error: "Image could not be generates"
+            error: "Image could not be generated"
         });
     }
 }
